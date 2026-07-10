@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sales Associate Round 1 Candidate Tracker</title>
+<style>
+  :root {
+    color-scheme: light;
+    --bg: #f7f7f5;
+    --card: #ffffff;
+    --border: #e2e0db;
+    --text: #2b2a27;
+    --muted: #6b6a66;
+    --accent: #b05a2f;
+    --accent-dark: #8a4523;
+    --green: #2f7a4a;
+    --green-bg: #e8f4ec;
+    --blue: #2f5f8a;
+    --blue-bg: #e8f0f7;
+    --amber: #a3760c;
+    --amber-bg: #faf1de;
+    --red: #b03a2f;
+    --red-bg: #faeae8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 20px 60px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .subtitle { color: var(--muted); margin: 0 0 20px; font-size: 13px; }
+  .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 18px; }
+  .toolbar input[type=text] { flex: 1; min-width: 180px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; background: var(--card); }
+  select.filter { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--card); font-size: 13px; }
+  button { cursor: pointer; font-size: 13px; border-radius: 6px; border: 1px solid var(--border); background: var(--card); padding: 8px 14px; color: var(--text); }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  button.primary:hover { background: var(--accent-dark); }
+  button:hover { background: #f1f0ec; }
+  button.primary:hover { background: var(--accent-dark); }
+  button.ghost { background: transparent; border: none; color: var(--muted); padding: 4px 8px; }
+  button.danger { color: var(--red); }
+
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  thead th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: .03em; color: var(--muted); padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: #faf9f7; }
+  .empty { text-align: center; color: var(--muted); padding: 40px 20px; }
+
+  .badge { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge.strong { background: var(--green-bg); color: var(--green); }
+  .badge.hire { background: var(--blue-bg); color: var(--blue); }
+  .badge.borderline { background: var(--amber-bg); color: var(--amber); }
+  .badge.reject { background: var(--red-bg); color: var(--red); }
+
+  .score-cell { font-weight: 700; }
+
+  .modal-backdrop { display: none; position: fixed; inset: 0; background: rgba(30,28,25,0.45); align-items: flex-start; justify-content: center; overflow-y: auto; z-index: 50; padding: 30px 16px; }
+  .modal-backdrop.open { display: flex; }
+  .modal { background: var(--card); border-radius: 10px; width: 100%; max-width: 760px; padding: 24px; margin-bottom: 40px; }
+  .modal h2 { margin-top: 0; font-size: 18px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .field { display: flex; flex-direction: column; gap: 4px; }
+  .field label { font-size: 12px; color: var(--muted); font-weight: 600; }
+  .field input, .field select, .field textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-family: inherit; background: #fff; }
+  .field textarea { resize: vertical; min-height: 50px; }
+
+  .section-block { border: 1px solid var(--border); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; background: #fdfcfb; }
+  .section-block h3 { margin: 0 0 2px; font-size: 14px; }
+  .section-block .weight { color: var(--muted); font-size: 12px; margin-bottom: 10px; }
+  .rating-row { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+  .rating-row select { width: 90px; padding: 6px 8px; border: 1px solid var(--border); border-radius: 6px; }
+  .rating-desc { font-size: 12px; color: var(--muted); flex: 1; }
+  .guide-toggle { font-size: 12px; color: var(--accent); cursor: pointer; user-select: none; font-weight: 600; }
+  .guide-box { font-size: 12px; color: var(--text); background: #fff; border: 1px dashed var(--border); border-radius: 6px; padding: 10px 12px; margin-top: 6px; display: none; white-space: pre-wrap; line-height: 1.5; max-height: 320px; overflow-y: auto; }
+  .guide-box.open { display: block; }
+
+  .modal-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); }
+  .total-preview { font-size: 15px; font-weight: 700; }
+  .total-preview .band { font-size: 12px; font-weight: 600; margin-left: 8px; }
+
+  .detail-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
+  .detail-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; font-size: 12px; }
+  .detail-grid div span { display: block; color: var(--muted); font-size: 11px; }
+  .score-breakdown { width: 100%; border-collapse: collapse; margin-bottom: 16px; }
+  .score-breakdown td, .score-breakdown th { padding: 6px 8px; border-bottom: 1px solid var(--border); font-size: 12px; text-align: left; }
+  .score-breakdown th { color: var(--muted); font-weight: 600; }
+  .notes-block { font-size: 13px; background: #fdfcfb; border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 10px; white-space: pre-wrap; }
+  .notes-block h4 { margin: 0 0 4px; font-size: 12px; color: var(--muted); }
+
+  .sync-note { font-size: 12px; color: var(--muted); background: var(--amber-bg); border: 1px solid #ecd9ae; border-radius: 6px; padding: 10px 12px; margin-bottom: 18px; }
+  .sync-note strong { color: var(--amber); }
+  #importArea { display: none; margin-top: 8px; }
+  #importArea textarea { width: 100%; min-height: 80px; font-family: monospace; font-size: 11px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sales Associate — Round 1 Candidate Tracker</h1>
+  <p class="subtitle">B2C Inside Sales hiring · scorecard follows the Round 1 Interview Playbook · passing score 75/100</p>
+
+  <div class="sync-note">
+    <strong>Storage note.</strong> Entries are saved in this browser only. To share with the rest of the hiring team, use Export after each interview and Import on a teammate's device to merge records, until a shared database is connected.
+  </div>
+
+  <div class="toolbar">
+    <input type="text" id="searchBox" placeholder="Search by candidate name or position...">
+    <select class="filter" id="decisionFilter">
+      <option value="">All decisions</option>
+      <option value="strong">Strong Hire</option>
+      <option value="hire">Hire</option>
+      <option value="borderline">Borderline</option>
+      <option value="reject">Reject</option>
+    </select>
+    <button class="primary" id="addBtn">+ Add Candidate</button>
+    <button id="exportBtn">Export JSON</button>
+    <button id="importBtn">Import JSON</button>
+  </div>
+  <div id="importArea">
+    <textarea id="importText" placeholder="Paste exported JSON here"></textarea>
+    <div style="margin-top:6px; display:flex; gap:8px;">
+      <button class="primary" id="importConfirm">Merge into list</button>
+      <button id="importCancel">Cancel</button>
+    </div>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Candidate</th>
+        <th>Position</th>
+        <th>Interview date</th>
+        <th>Interviewer</th>
+        <th>Total score</th>
+        <th>Decision</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="tableBody"></tbody>
+  </table>
+  <div class="empty" id="emptyState" style="display:none;">No candidates yet. Click "Add Candidate" to log your first Round 1 interview.</div>
+</div>
+
+<!-- Add/Edit Modal -->
+<div class="modal-backdrop" id="formBackdrop">
+  <div class="modal">
+    <h2 id="formTitle">Add Candidate</h2>
+    <div class="field-row">
+      <div class="field"><label>Candidate name</label><input type="text" id="f_name"></div>
+      <div class="field"><label>Position applied for</label><input type="text" id="f_position" value="Sales Associate"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Interview date</label><input type="date" id="f_date"></div>
+      <div class="field"><label>Interviewer</label><input type="text" id="f_interviewer"></div>
+    </div>
+    <div class="field-row">
+      <div class="field"><label>Email (optional)</label><input type="text" id="f_email"></div>
+      <div class="field"><label>Phone (optional)</label><input type="text" id="f_phone"></div>
+    </div>
+
+    <div id="sectionsContainer"></div>
+
+    <div class="field" style="margin-bottom:12px;">
+      <label>Overall notes / recommendation</label>
+      <textarea id="f_overallNotes"></textarea>
+    </div>
+
+    <div class="modal-footer">
+      <div class="total-preview">Total: <span id="livePreview">0 / 100</span><span class="band" id="liveBand"></span></div>
+      <div style="display:flex; gap:8px;">
+        <button id="cancelBtn">Cancel</button>
+        <button class="primary" id="saveBtn">Save candidate</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Detail View Modal -->
+<div class="modal-backdrop" id="detailBackdrop">
+  <div class="modal" id="detailModal"></div>
+</div>
+
+<script>
+const SECTIONS = [
+  {
+    key: 'communication', title: 'Communication Skills', weight: 20,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Tell me about yourself.\n" +
+"• Can you explain your previous role in one minute?\n" +
+"\n" +
+"WHAT TO OBSERVE\n" +
+"Do not interrupt. Watch for: confidence, energy, clarity, listening ability, sentence structure, vocabulary, fluency, and ability to organize thoughts.\n" +
+"\n" +
+"EXCELLENT CANDIDATE\n" +
+"• Speaks naturally, not memorized\n" +
+"• Answers in a structured manner\n" +
+"• Maintains confidence throughout\n" +
+"• Gets straight to relevant experience\n" +
+"• Maintains good pace without rushing\n" +
+"\n" +
+"AVERAGE CANDIDATE\n" +
+"• Some hesitation, slightly lengthy answers\n" +
+"• Needs prompting, average confidence\n" +
+"\n" +
+"REJECT INDICATORS\n" +
+"• Very poor communication, cannot explain previous work\n" +
+"• Extremely low confidence, monotone\n" +
+"• Heavy dependence on fillers (\"umm\", \"like\", \"actually\") throughout\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Excellent communication, highly confident\n" +
+"4 — Good communication with minor improvement areas\n" +
+"3 — Average communication\n" +
+"2 — Weak communication\n" +
+"1 — Poor communication, difficult to understand"
+  },
+  {
+    key: 'consultativeSelling', title: 'Consultative Selling (Mock Pitch)', weight: 25,
+    guide:
+"SCENARIO TO RUN\n" +
+"\"Imagine I have shown interest in an online career program. Start the conversation exactly as you would on a real sales call.\" Only answer what the candidate actually asks — do not volunteer extra information.\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"Whether the candidate builds rapport, performs need analysis, asks discovery questions, understands customer goals, identifies pain points, and recommends a solution based on need — OR whether they immediately begin pitching.\n" +
+"\n" +
+"GOOD DISCOVERY QUESTIONS (what a strong candidate should ask)\n" +
+"• Why are you exploring this program?\n" +
+"• What are you doing currently?\n" +
+"• What are you hoping to achieve?\n" +
+"• Have you explored any alternatives?\n" +
+"• What's stopping you today?\n" +
+"• What's your timeline?\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Conversation feels natural, curious about the customer\n" +
+"• Doesn't rush, tailors recommendations\n" +
+"• Listens carefully before recommending\n" +
+"\n" +
+"RED FLAGS\n" +
+"• Starts product explanation immediately\n" +
+"• Sounds rehearsed / delivers a memorized script\n" +
+"• Doesn't ask questions, talks more than listens\n" +
+"\n" +
+"PROBE IF THEY PITCH IMMEDIATELY\n" +
+"Ask: \"Why did you start explaining the product before understanding my requirement?\" A strong salesperson recognizes the mistake and explains the importance of discovery.\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Excellent consultative selling with deep discovery\n" +
+"4 — Good need analysis with minor gaps\n" +
+"3 — Some questions but still product-focused\n" +
+"2 — Mostly scripted pitch\n" +
+"1 — Complete product dump without understanding the customer"
+  },
+  {
+    key: 'pastPerformance', title: 'Past Performance & Competitiveness', weight: 20,
+    guide:
+"QUESTIONS TO ASK\n" +
+"Walk me through your previous sales role, then:\n" +
+"• What was your monthly target? Average achievement? Best month?\n" +
+"• What was your biggest achievement?\n" +
+"• How many people were in your team? Who was the top performer?\n" +
+"• Where would you rank yourself, and why weren't you the top performer?\n" +
+"• What stopped you from becoming Number 1?\n" +
+"• What did the top performer do differently?\n" +
+"\n" +
+"PURPOSE\n" +
+"Evaluate self-awareness, competitiveness, ownership, understanding of performance, and growth mindset.\n" +
+"\n" +
+"GREEN FLAGS (listen for)\n" +
+"• \"I wasn't consistent.\"\n" +
+"• \"I could have improved follow-ups.\"\n" +
+"• \"They managed objections better.\"\n" +
+"• \"I learned a lot from the top performer.\"\n" +
+"• \"I know exactly what I need to improve.\"\n" +
+"\n" +
+"RED FLAGS (listen for)\n" +
+"• \"My manager never supported me.\"\n" +
+"• \"They received better leads.\"\n" +
+"• \"The company was unfair / targets were impossible.\"\n" +
+"• \"The top performer got lucky.\"\n" +
+"Repeated external blame is a strong negative indicator.\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Highly competitive with complete ownership\n" +
+"4 — Strong performer with good self-awareness\n" +
+"3 — Average understanding of own performance\n" +
+"2 — Weak ownership\n" +
+"1 — Constant blame and excuses"
+  },
+  {
+    key: 'ownershipAccountability', title: 'Ownership & Accountability (Reason for Leaving)', weight: 15,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Why are you looking to change your current job? What prompted this decision?\n" +
+"• If those issues were resolved, would you stay?\n" +
+"• What would your previous manager say about your performance?\n" +
+"Keep asking \"Why?\" until the underlying reason becomes clear.\n" +
+"\n" +
+"PURPOSE\n" +
+"Assess accountability, professional maturity, positivity, and ability to handle challenges.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Looking for better growth or learning opportunities\n" +
+"• Higher earning potential, better role fit\n" +
+"• Wants greater responsibility\n" +
+"\n" +
+"RED FLAGS\n" +
+"• Blames everyone else, complains excessively\n" +
+"• Speaks disrespectfully about previous employer\n" +
+"• No ownership of challenges, inconsistent answers\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Mature and accountable\n" +
+"4 — Mostly positive with minor concerns\n" +
+"3 — Neutral\n" +
+"2 — Defensive and excuse-driven\n" +
+"1 — Strong blame mentality"
+  },
+  {
+    key: 'financialMotivation', title: 'Financial Motivation', weight: 10,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Tell me a little about your family. Who do you currently live with?\n" +
+"• Are you financially responsible for anyone?\n" +
+"• What motivates you to earn more money?\n" +
+"• If your income doubled next year, what would change in your life?\n" +
+"\n" +
+"PURPOSE\n" +
+"Not to judge family circumstances. Used to understand hunger, financial goals, responsibility, and personal motivation.\n" +
+"\n" +
+"STRONG INDICATORS\n" +
+"• Supporting parents, paying loans\n" +
+"• Building savings, buying a home\n" +
+"• Career ambitions, financial independence\n" +
+"\n" +
+"WEAK INDICATORS\n" +
+"• No clear goals\n" +
+"• Doesn't know why higher income matters\n" +
+"• Looking only for job stability\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Strong financial motivation and ambition\n" +
+"4 — Good motivation with realistic goals\n" +
+"3 — Average motivation\n" +
+"2 — Weak motivation\n" +
+"1 — No visible drive to earn or grow"
+  },
+  {
+    key: 'salesMindset', title: 'Sales Mindset', weight: 10,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• What do you enjoy most about sales?\n" +
+"• What is the most difficult part of sales?\n" +
+"• If you had the option to move into a non-sales role tomorrow with the same salary, would you take it? Why?\n" +
+"\n" +
+"PURPOSE\n" +
+"Determine whether the candidate genuinely enjoys sales or is simply using it as a temporary job.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"Enjoys competition, closing deals, solving customer problems, negotiation, variable earnings, targets, continuous improvement. Acknowledges challenges like rejection or follow-ups but explains how they overcome them.\n" +
+"\n" +
+"RED FLAGS\n" +
+"Dislikes calling people, follow-ups, targets, pressure, rejection, or customer conversations — these are fundamental parts of a B2C inside sales role.\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Loves sales and thrives in performance environments\n" +
+"4 — Positive attitude towards sales\n" +
+"3 — Neutral\n" +
+"2 — Mixed feelings about sales\n" +
+"1 — Does not enjoy core sales activities"
+  }
+];
+
+const STORAGE_KEY = 'salesRound1Candidates';
+let candidates = [];
+let editingId = null;
+
+function loadData() {
+  try {
+    candidates = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch(e) { candidates = []; }
+}
+function saveData() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(candidates));
+}
+
+function computeTotal(sections) {
+  let total = 0;
+  SECTIONS.forEach(s => {
+    const rating = sections[s.key] ? Number(sections[s.key].rating || 0) : 0;
+    total += rating * (s.weight / 5);
+  });
+  return total;
+}
+function decisionFor(total) {
+  if (total >= 85) return { key: 'strong', label: 'Strong Hire' };
+  if (total >= 75) return { key: 'hire', label: 'Hire' };
+  if (total >= 65) return { key: 'borderline', label: 'Borderline' };
+  return { key: 'reject', label: 'Reject' };
+}
+
+function renderTable() {
+  const search = document.getElementById('searchBox').value.trim().toLowerCase();
+  const filter = document.getElementById('decisionFilter').value;
+  const body = document.getElementById('tableBody');
+  body.innerHTML = '';
+
+  let list = candidates.slice().sort((a,b) => (b.updatedAt||0) - (a.updatedAt||0));
+  if (search) {
+    list = list.filter(c => (c.name||'').toLowerCase().includes(search) || (c.position||'').toLowerCase().includes(search));
+  }
+  if (filter) {
+    list = list.filter(c => decisionFor(computeTotal(c.sections)).key === filter);
+  }
+
+  document.getElementById('emptyState').style.display = list.length ? 'none' : 'block';
+
+  list.forEach(c => {
+    const total = computeTotal(c.sections);
+    const dec = decisionFor(total);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${escapeHtml(c.name || '(unnamed)')}</td>
+      <td>${escapeHtml(c.position || '')}</td>
+      <td>${escapeHtml(c.date || '')}</td>
+      <td>${escapeHtml(c.interviewer || '')}</td>
+      <td class="score-cell">${total} / 100</td>
+      <td><span class="badge ${dec.key}">${dec.label}</span></td>
+      <td style="text-align:right; white-space:nowrap;">
+        <button class="ghost" data-view="${c.id}">View</button>
+        <button class="ghost" data-edit="${c.id}">Edit</button>
+        <button class="ghost danger" data-del="${c.id}">Delete</button>
+      </td>
+    `;
+    body.appendChild(tr);
+  });
+
+  body.querySelectorAll('[data-view]').forEach(b => b.onclick = () => openDetail(b.dataset.view));
+  body.querySelectorAll('[data-edit]').forEach(b => b.onclick = () => openForm(b.dataset.edit));
+  body.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    if (confirm('Delete this candidate record?')) {
+      candidates = candidates.filter(c => c.id !== b.dataset.del);
+      saveData();
+      renderTable();
+    }
+  });
+}
+
+function escapeHtml(str) {
+  const d = document.createElement('div');
+  d.textContent = str == null ? '' : String(str);
+  return d.innerHTML;
+}
+
+function buildSectionsForm(existingSections) {
+  const container = document.getElementById('sectionsContainer');
+  container.innerHTML = '';
+  SECTIONS.forEach(s => {
+    const existing = (existingSections && existingSections[s.key]) || { rating: '', notes: '' };
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <h3>${s.title}</h3>
+      <div class="weight">Weight: ${s.weight} pts</div>
+      <div class="rating-row">
+        <select id="rating_${s.key}">
+          <option value="">Rate 1-5</option>
+          ${[5,4,3,2,1].map(v => `<option value="${v}" ${String(existing.rating)===String(v)?'selected':''}>${v}</option>`).join('')}
+        </select>
+        <span class="rating-desc">= <span id="pts_${s.key}">0</span> / ${s.weight} pts</span>
+        <span class="guide-toggle" data-guide="${s.key}">what to assess ▾</span>
+      </div>
+      <div class="guide-box" id="guide_${s.key}">${escapeHtml(s.guide)}</div>
+      <div class="field">
+        <label>Notes / flags observed</label>
+        <textarea id="notes_${s.key}">${escapeHtml(existing.notes || '')}</textarea>
+      </div>
+    `;
+    container.appendChild(block);
+  });
+
+  container.querySelectorAll('.guide-toggle').forEach(el => {
+    el.onclick = () => {
+      document.getElementById('guide_' + el.dataset.guide).classList.toggle('open');
+    };
+  });
+  SECTIONS.forEach(s => {
+    document.getElementById('rating_' + s.key).addEventListener('change', updateLivePreview);
+  });
+  updateLivePreview();
+}
+
+function collectSectionsFromForm() {
+  const sections = {};
+  SECTIONS.forEach(s => {
+    sections[s.key] = {
+      rating: document.getElementById('rating_' + s.key).value,
+      notes: document.getElementById('notes_' + s.key).value
+    };
+  });
+  return sections;
+}
+
+function updateLivePreview() {
+  let total = 0;
+  SECTIONS.forEach(s => {
+    const rating = Number(document.getElementById('rating_' + s.key).value || 0);
+    const pts = rating * (s.weight / 5);
+    document.getElementById('pts_' + s.key).textContent = pts;
+    total += pts;
+  });
+  document.getElementById('livePreview').textContent = total + ' / 100';
+  const dec = decisionFor(total);
+  const bandEl = document.getElementById('liveBand');
+  bandEl.textContent = dec.label;
+  bandEl.className = 'band badge ' + dec.key;
+}
+
+function openForm(id) {
+  editingId = id || null;
+  const c = id ? candidates.find(x => x.id === id) : null;
+  document.getElementById('formTitle').textContent = id ? 'Edit Candidate' : 'Add Candidate';
+  document.getElementById('f_name').value = c ? c.name || '' : '';
+  document.getElementById('f_position').value = c ? c.position || '' : 'Sales Associate';
+  document.getElementById('f_date').value = c ? c.date || '' : new Date().toISOString().slice(0,10);
+  document.getElementById('f_interviewer').value = c ? c.interviewer || '' : '';
+  document.getElementById('f_email').value = c ? c.email || '' : '';
+  document.getElementById('f_phone').value = c ? c.phone || '' : '';
+  document.getElementById('f_overallNotes').value = c ? c.overallNotes || '' : '';
+  buildSectionsForm(c ? c.sections : null);
+  document.getElementById('formBackdrop').classList.add('open');
+}
+function closeForm() {
+  document.getElementById('formBackdrop').classList.remove('open');
+  editingId = null;
+}
+
+function saveCandidate() {
+  const name = document.getElementById('f_name').value.trim();
+  if (!name) { alert('Candidate name is required.'); return; }
+  const sections = collectSectionsFromForm();
+  const record = {
+    id: editingId || ('c_' + Date.now() + '_' + Math.random().toString(36).slice(2,8)),
+    name,
+    position: document.getElementById('f_position').value.trim(),
+    date: document.getElementById('f_date').value,
+    interviewer: document.getElementById('f_interviewer').value.trim(),
+    email: document.getElementById('f_email').value.trim(),
+    phone: document.getElementById('f_phone').value.trim(),
+    sections,
+    overallNotes: document.getElementById('f_overallNotes').value,
+    updatedAt: Date.now()
+  };
+  const existingIdx = candidates.findIndex(x => x.id === record.id);
+  if (existingIdx >= 0) {
+    record.createdAt = candidates[existingIdx].createdAt || Date.now();
+    candidates[existingIdx] = record;
+  } else {
+    record.createdAt = Date.now();
+    candidates.push(record);
+  }
+  saveData();
+  closeForm();
+  renderTable();
+}
+
+function openDetail(id) {
+  const c = candidates.find(x => x.id === id);
+  if (!c) return;
+  const total = computeTotal(c.sections);
+  const dec = decisionFor(total);
+  const modal = document.getElementById('detailModal');
+  modal.innerHTML = `
+    <div class="detail-header">
+      <div>
+        <h2 style="margin:0;">${escapeHtml(c.name)}</h2>
+        <div style="color:var(--muted); font-size:13px;">${escapeHtml(c.position || '')}</div>
+      </div>
+      <span class="badge ${dec.key}" style="font-size:13px; padding:5px 12px;">${dec.label} — ${total}/100</span>
+    </div>
+    <div class="detail-grid">
+      <div><span>Interview date</span>${escapeHtml(c.date || '-')}</div>
+      <div><span>Interviewer</span>${escapeHtml(c.interviewer || '-')}</div>
+      <div><span>Contact</span>${escapeHtml(c.email || c.phone || '-')}</div>
+    </div>
+    <table class="score-breakdown">
+      <thead><tr><th>Competency</th><th>Rating</th><th>Score</th></tr></thead>
+      <tbody>
+        ${SECTIONS.map(s => {
+          const sec = c.sections[s.key] || {};
+          const rating = sec.rating || '-';
+          const pts = rating !== '-' ? Number(rating) * (s.weight/5) : 0;
+          return `<tr><td>${s.title}</td><td>${rating}/5</td><td>${pts} / ${s.weight}</td></tr>`;
+        }).join('')}
+      </tbody>
+    </table>
+    ${SECTIONS.map(s => {
+      const sec = c.sections[s.key] || {};
+      if (!sec.notes) return '';
+      return `<div class="notes-block"><h4>${s.title} — notes</h4>${escapeHtml(sec.notes)}</div>`;
+    }).join('')}
+    ${c.overallNotes ? `<div class="notes-block"><h4>Overall notes / recommendation</h4>${escapeHtml(c.overallNotes)}</div>` : ''}
+    <div class="modal-footer">
+      <div></div>
+      <div style="display:flex; gap:8px;">
+        <button id="detailEditBtn">Edit</button>
+        <button class="primary" id="detailCloseBtn">Close</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('detailBackdrop').classList.add('open');
+  document.getElementById('detailCloseBtn').onclick = () => document.getElementById('detailBackdrop').classList.remove('open');
+  document.getElementById('detailEditBtn').onclick = () => {
+    document.getElementById('detailBackdrop').classList.remove('open');
+    openForm(c.id);
+  };
+}
+
+document.getElementById('addBtn').onclick = () => openForm(null);
+document.getElementById('cancelBtn').onclick = closeForm;
+document.getElementById('saveBtn').onclick = saveCandidate;
+document.getElementById('searchBox').addEventListener('input', renderTable);
+document.getElementById('decisionFilter').addEventListener('change', renderTable);
+document.getElementById('formBackdrop').addEventListener('click', e => { if (e.target.id === 'formBackdrop') closeForm(); });
+document.getElementById('detailBackdrop').addEventListener('click', e => { if (e.target.id === 'detailBackdrop') document.getElementById('detailBackdrop').classList.remove('open'); });
+
+document.getElementById('exportBtn').onclick = () => {
+  const data = JSON.stringify(candidates, null, 2);
+  const blob = new Blob([data], {type: 'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'sales_round1_candidates_' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+};
+document.getElementById('importBtn').onclick = () => {
+  const area = document.getElementById('importArea');
+  area.style.display = area.style.display === 'none' ? 'block' : 'none';
+};
+document.getElementById('importCancel').onclick = () => {
+  document.getElementById('importArea').style.display = 'none';
+  document.getElementById('importText').value = '';
+};
+document.getElementById('importConfirm').onclick = () => {
+  try {
+    const incoming = JSON.parse(document.getElementById('importText').value);
+    if (!Array.isArray(incoming)) throw new Error('not an array');
+    let added = 0, updated = 0;
+    incoming.forEach(rec => {
+      if (!rec.id) return;
+      const idx = candidates.findIndex(c => c.id === rec.id);
+      if (idx >= 0) {
+        if ((rec.updatedAt||0) > (candidates[idx].updatedAt||0)) { candidates[idx] = rec; updated++; }
+      } else {
+        candidates.push(rec); added++;
+      }
+    });
+    saveData();
+    renderTable();
+    document.getElementById('importArea').style.display = 'none';
+    document.getElementById('importText').value = '';
+    alert(`Merged: ${added} added, ${updated} updated.`);
+  } catch (e) {
+    alert('Could not parse JSON: ' + e.message);
+  }
+};
+
+loadData();
+renderTable();
+</script>
+</body>
+</html>
