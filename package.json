@@ -1,0 +1,17 @@
+{
+  "name": "sales-hiring-tracker",
+  "version": "2.0.0",
+  "description": "Shared candidate tracker for B2C inside sales hiring: Round 1 and Round 2 scorecards, pipeline stages, and a live hiring dashboard.",
+  "main": "server.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "pg": "^8.13.1"
+  },
+  "license": "MIT"
+}
