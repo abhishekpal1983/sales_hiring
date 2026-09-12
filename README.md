@@ -10,10 +10,16 @@ their own browser.
 ## What it does
 
 - **Pipeline** — one row per candidate: stage, Round 1 score, Round 2 score, who touched it last.
-- **Scorecards** — the Round 1 Interview Playbook competencies (weighted to 100) plus a
-  Round 2 deep-dive scorecard (objection handling, closing, full-cycle role play, CRM
-  discipline, coachability, joining fit). Each competency carries the full "what to assess"
-  guide inline.
+- **Round 1, sales skills** (weighted to 100): communication 10, consultative selling and
+  discovery 20, objection handling and negotiation 20, closing and follow-up discipline 15,
+  past performance and numbers 15, process and CRM discipline 10, sales mindset 10. Sections
+  2 to 4 are run as ONE continuous mock call, scored in three parts.
+- **Round 2, drive and culture fit** (weighted to 100): response to being behind target 25,
+  pressure handling and resilience 20, work ethic and go-getter attitude 20, competitiveness
+  and ambition 15, financial motivation and dependencies 10, ownership, stability and joining
+  fit 10.
+- Each competency carries the full "what to assess" guide inline: questions to ask, what you
+  are testing, green flags, red flags, and a 1 to 5 rating guide.
 - **Stages** — Applied, Round 1, Round 2, Offer, Hired, Rejected, On hold.
 - **Dashboard** — pass rate, average scores, pipeline by stage, average score per
   competency, and interviewer activity.
