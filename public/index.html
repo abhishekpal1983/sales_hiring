@@ -206,7 +206,7 @@
     <!-- PIPELINE -->
     <section id="view-pipeline">
       <h1>Candidate pipeline</h1>
-      <p class="subtitle">Round 1 passing score 75/100 &middot; Round 2 passing score 75/100 &middot; every entry is shared live with the whole team</p>
+      <p class="subtitle">Round 1 is the sales skills assessment, Round 2 is drive and culture fit &middot; each scored out of 100, passing 75 &middot; every entry is shared live with the whole team</p>
 
       <div class="toolbar">
         <input type="text" id="searchBox" placeholder="Search name, position or interviewer...">
@@ -267,7 +267,7 @@
           <div id="decisionBars"></div>
         </div>
         <div class="panel">
-          <h2>Average competency score, Round 1</h2>
+          <h2>Average competency score, Round 1 (sales skills)</h2>
           <div id="competencyBars"></div>
         </div>
       </div>
@@ -282,7 +282,7 @@
           </div>
         </div>
         <div class="panel">
-          <h2>Average competency score, Round 2</h2>
+          <h2>Average competency score, Round 2 (drive &amp; culture fit)</h2>
           <div id="competencyBars2"></div>
         </div>
       </div>
@@ -318,8 +318,8 @@
     </div>
 
     <div class="round-tabs" id="roundTabs">
-      <button data-round="round1" class="active">Round 1 scorecard</button>
-      <button data-round="round2">Round 2 scorecard</button>
+      <button data-round="round1" class="active">Round 1: Sales skills</button>
+      <button data-round="round2">Round 2: Drive &amp; culture fit</button>
     </div>
 
     <div class="round-meta">
@@ -358,7 +358,7 @@
 
 var ROUND1 = [
   {
-    key: 'communication', title: 'Communication Skills', weight: 20,
+    key: 'communication', title: 'Communication Skills', weight: 10,
     guide:
 "QUESTIONS TO ASK\n" +
 "• Tell me about yourself.\n" +
@@ -391,13 +391,16 @@ var ROUND1 = [
 "1 — Poor communication, difficult to understand"
   },
   {
-    key: 'consultativeSelling', title: 'Consultative Selling (Mock Pitch)', weight: 25,
+    key: 'consultativeSelling', title: 'Consultative Selling & Discovery (Mock Call, part 1)', weight: 20,
     guide:
-"SCENARIO TO RUN\n" +
-"\"Imagine I have shown interest in an online career program. Start the conversation exactly as you would on a real sales call.\" Only answer what the candidate actually asks, do not volunteer extra information.\n" +
+"HOW TO RUN THIS ROUND\n" +
+"Sections 2, 3 and 4 are ONE continuous mock call, scored in three parts. Do not stop between them. Run eight to ten minutes end to end, playing a realistic, mildly distracted lead who only answers what is actually asked.\n" +
 "\n" +
-"WHAT YOU ARE TESTING\n" +
-"Whether the candidate builds rapport, performs need analysis, asks discovery questions, understands customer goals, identifies pain points, and recommends a solution based on need, OR whether they immediately begin pitching.\n" +
+"SCENARIO TO OPEN WITH\n" +
+"\"I filled a form for an online career program and you are calling me back. Start the conversation exactly as you would on a real call.\"\n" +
+"\n" +
+"WHAT YOU ARE TESTING IN THIS PART\n" +
+"Whether the candidate builds rapport, performs need analysis, asks discovery questions, understands goals, identifies pain points, and recommends based on need, OR whether they immediately begin pitching.\n" +
 "\n" +
 "GOOD DISCOVERY QUESTIONS\n" +
 "• Why are you exploring this program?\n" +
@@ -408,152 +411,35 @@ var ROUND1 = [
 "• What's your timeline?\n" +
 "\n" +
 "GREEN FLAGS\n" +
+"• Permission and context in the first 20 seconds\n" +
 "• Conversation feels natural, curious about the customer\n" +
-"• Doesn't rush, tailors recommendations\n" +
-"• Listens carefully before recommending\n" +
+"• Talk to listen ratio around 40:60\n" +
+"• Pitches back using the lead's own words\n" +
+"• Recovers smoothly when the lead goes off script\n" +
 "\n" +
 "RED FLAGS\n" +
 "• Starts product explanation immediately\n" +
 "• Sounds rehearsed, delivers a memorized script\n" +
-"• Doesn't ask questions, talks more than listens\n" +
+"• Talks two minutes without asking a question\n" +
+"• Cannot adapt when interrupted\n" +
 "\n" +
 "PROBE IF THEY PITCH IMMEDIATELY\n" +
 "Ask: \"Why did you start explaining the product before understanding my requirement?\" A strong salesperson recognizes the mistake and explains the importance of discovery.\n" +
 "\n" +
 "RATING GUIDE\n" +
-"5 — Excellent consultative selling with deep discovery\n" +
+"5 — Excellent discovery, pitch fully tailored to what was heard\n" +
 "4 — Good need analysis with minor gaps\n" +
 "3 — Some questions but still product-focused\n" +
 "2 — Mostly scripted pitch\n" +
 "1 — Complete product dump without understanding the customer"
   },
   {
-    key: 'pastPerformance', title: 'Past Performance & Competitiveness', weight: 20,
+    key: 'objectionHandling', title: 'Objection Handling & Negotiation (Mock Call, part 2)', weight: 20,
     guide:
-"QUESTIONS TO ASK\n" +
-"Walk me through your previous sales role, then:\n" +
-"• What was your monthly target? Average achievement? Best month?\n" +
-"• What was your biggest achievement?\n" +
-"• How many people were in your team? Who was the top performer?\n" +
-"• Where would you rank yourself, and why weren't you the top performer?\n" +
-"• What stopped you from becoming Number 1?\n" +
-"• What did the top performer do differently?\n" +
-"\n" +
-"PURPOSE\n" +
-"Evaluate self-awareness, competitiveness, ownership, understanding of performance, and growth mindset.\n" +
-"\n" +
-"GREEN FLAGS\n" +
-"• \"I wasn't consistent.\"\n" +
-"• \"I could have improved follow-ups.\"\n" +
-"• \"They managed objections better.\"\n" +
-"• \"I know exactly what I need to improve.\"\n" +
-"\n" +
-"RED FLAGS\n" +
-"• \"My manager never supported me.\"\n" +
-"• \"They received better leads.\"\n" +
-"• \"The company was unfair, targets were impossible.\"\n" +
-"• \"The top performer got lucky.\"\n" +
-"Repeated external blame is a strong negative indicator.\n" +
-"\n" +
-"RATING GUIDE\n" +
-"5 — Highly competitive with complete ownership\n" +
-"4 — Strong performer with good self-awareness\n" +
-"3 — Average understanding of own performance\n" +
-"2 — Weak ownership\n" +
-"1 — Constant blame and excuses"
-  },
-  {
-    key: 'ownershipAccountability', title: 'Ownership & Accountability (Reason for Leaving)', weight: 15,
-    guide:
-"QUESTIONS TO ASK\n" +
-"• Why are you looking to change your current job? What prompted this decision?\n" +
-"• If those issues were resolved, would you stay?\n" +
-"• What would your previous manager say about your performance?\n" +
-"Keep asking \"Why?\" until the underlying reason becomes clear.\n" +
-"\n" +
-"PURPOSE\n" +
-"Assess accountability, professional maturity, positivity, and ability to handle challenges.\n" +
-"\n" +
-"GREEN FLAGS\n" +
-"• Looking for better growth or learning opportunities\n" +
-"• Higher earning potential, better role fit\n" +
-"• Wants greater responsibility\n" +
-"\n" +
-"RED FLAGS\n" +
-"• Blames everyone else, complains excessively\n" +
-"• Speaks disrespectfully about previous employer\n" +
-"• No ownership of challenges, inconsistent answers\n" +
-"\n" +
-"RATING GUIDE\n" +
-"5 — Mature and accountable\n" +
-"4 — Mostly positive with minor concerns\n" +
-"3 — Neutral\n" +
-"2 — Defensive and excuse-driven\n" +
-"1 — Strong blame mentality"
-  },
-  {
-    key: 'financialMotivation', title: 'Financial Motivation', weight: 10,
-    guide:
-"QUESTIONS TO ASK\n" +
-"• Tell me a little about your family. Who do you currently live with?\n" +
-"• Are you financially responsible for anyone?\n" +
-"• What motivates you to earn more money?\n" +
-"• If your income doubled next year, what would change in your life?\n" +
-"\n" +
-"PURPOSE\n" +
-"Not to judge family circumstances. Used to understand hunger, financial goals, responsibility, and personal motivation.\n" +
-"\n" +
-"STRONG INDICATORS\n" +
-"• Supporting parents, paying loans\n" +
-"• Building savings, buying a home\n" +
-"• Career ambitions, financial independence\n" +
-"\n" +
-"WEAK INDICATORS\n" +
-"• No clear goals\n" +
-"• Doesn't know why higher income matters\n" +
-"• Looking only for job stability\n" +
-"\n" +
-"RATING GUIDE\n" +
-"5 — Strong financial motivation and ambition\n" +
-"4 — Good motivation with realistic goals\n" +
-"3 — Average motivation\n" +
-"2 — Weak motivation\n" +
-"1 — No visible drive to earn or grow"
-  },
-  {
-    key: 'salesMindset', title: 'Sales Mindset', weight: 10,
-    guide:
-"QUESTIONS TO ASK\n" +
-"• What do you enjoy most about sales?\n" +
-"• What is the most difficult part of sales?\n" +
-"• If you had the option to move into a non-sales role tomorrow with the same salary, would you take it? Why?\n" +
-"\n" +
-"PURPOSE\n" +
-"Determine whether the candidate genuinely enjoys sales or is simply using it as a temporary job.\n" +
-"\n" +
-"GREEN FLAGS\n" +
-"Enjoys competition, closing deals, solving customer problems, negotiation, variable earnings, targets, continuous improvement. Acknowledges challenges like rejection or follow-ups but explains how they overcome them.\n" +
-"\n" +
-"RED FLAGS\n" +
-"Dislikes calling people, follow-ups, targets, pressure, rejection, or customer conversations. These are fundamental parts of a B2C inside sales role.\n" +
-"\n" +
-"RATING GUIDE\n" +
-"5 — Loves sales and thrives in performance environments\n" +
-"4 — Positive attitude towards sales\n" +
-"3 — Neutral\n" +
-"2 — Mixed feelings about sales\n" +
-"1 — Does not enjoy core sales activities"
-  }
-];
-
-var ROUND2 = [
-  {
-    key: 'objectionHandling', title: 'Objection Handling & Negotiation', weight: 25,
-    guide:
-"SCENARIO TO RUN\n" +
-"Give the candidate a live objection and hold your ground for at least three exchanges:\n" +
+"CONTINUE THE SAME CALL\n" +
+"Once they have pitched, throw an objection and hold your ground for at least three exchanges. Use one or two of:\n" +
 "• \"It is too expensive, I need to think about it.\"\n" +
-"• \"I want to discuss with my parents / spouse first.\"\n" +
+"• \"I want to discuss with my parents or spouse first.\"\n" +
 "• \"I found a cheaper program elsewhere.\"\n" +
 "• \"I will call you back next month.\"\n" +
 "\n" +
@@ -581,9 +467,12 @@ var ROUND2 = [
 "1 — Cannot hold the conversation past the first objection"
   },
   {
-    key: 'closingDiscipline', title: 'Closing & Follow-up Discipline', weight: 20,
+    key: 'closingDiscipline', title: 'Closing & Follow-up Discipline (Mock Call, part 3)', weight: 15,
     guide:
-"QUESTIONS TO ASK\n" +
+"CLOSE THE SAME CALL\n" +
+"Let the call run to its natural end. Do not prompt them to close. Note whether they ask at all.\n" +
+"\n" +
+"THEN ASK\n" +
 "• Walk me through how you close a deal, from interest to payment.\n" +
 "• A lead says yes on the call but does not pay. What do you do in the next 48 hours?\n" +
 "• How many follow-ups before you drop a lead, and what changes each time?\n" +
@@ -600,52 +489,56 @@ var ROUND2 = [
 "• Knows their own close rate and follow-up counts\n" +
 "\n" +
 "RED FLAGS\n" +
-"• Ends calls with \"let me know\"\n" +
+"• Ends the mock call without any ask\n" +
+"• Ends real calls with \"let me know\"\n" +
 "• No structured follow-up cadence\n" +
 "• Blames leads for not converting\n" +
-"• Cannot state a single number about their own funnel\n" +
 "\n" +
 "RATING GUIDE\n" +
-"5 — Deliberate closing process with disciplined follow-up cadence\n" +
+"5 — Closed the mock call cleanly and has a disciplined follow-up cadence\n" +
 "4 — Good instincts, cadence slightly loose\n" +
 "3 — Closes when asked to, no system of their own\n" +
 "2 — Passive, waits for the customer to decide\n" +
 "1 — No closing attempt and no follow-up structure"
   },
   {
-    key: 'fullCycleRolePlay', title: 'Role Play: Full Cycle Call', weight: 20,
+    key: 'pastPerformance', title: 'Past Performance & Numbers', weight: 15,
     guide:
-"SCENARIO TO RUN\n" +
-"A full eight to ten minute call from opening to close on a real program from our roster. Give the candidate a one line brief only: the lead filled a form for a career program and picked up the phone. Play a realistic, mildly distracted lead.\n" +
+"QUESTIONS TO ASK\n" +
+"Walk me through your previous sales role, then:\n" +
+"• What was your monthly target? Average achievement? Best month? Worst month?\n" +
+"• What was your average ticket size and close rate?\n" +
+"• How many dials and connects did you make on a typical day?\n" +
+"• What was your biggest achievement?\n" +
+"• How many people were in your team, and where did you rank?\n" +
 "\n" +
-"WHAT TO SCORE\n" +
-"• Opening: permission, context, energy in the first 20 seconds\n" +
-"• Discovery: depth and order of questions\n" +
-"• Pitch: tailored to what the lead actually said, not a feature list\n" +
-"• Objection: handled without losing the thread\n" +
-"• Close: clear ask with a concrete next step\n" +
+"PURPOSE\n" +
+"Establish whether the track record is real and whether they actually know their own numbers. Drive and competitiveness are assessed separately in Round 2, so keep this section on evidence.\n" +
 "\n" +
 "GREEN FLAGS\n" +
-"• Talk-to-listen ratio roughly 40:60\n" +
-"• Refers back to the lead's own words when pitching\n" +
-"• Recovers smoothly when the lead goes off script\n" +
-"• Controls the call without dominating it\n" +
+"• Numbers come out immediately, without hedging\n" +
+"• Figures stay consistent when you circle back to them later\n" +
+"• Can explain what drove a good month versus a bad one\n" +
+"• Honest about a bad month rather than hiding it\n" +
 "\n" +
 "RED FLAGS\n" +
-"• Reads a script, cannot adapt when interrupted\n" +
-"• Talks for more than two minutes without a question\n" +
-"• Forgets to close\n" +
-"• Goes silent or gives up when the lead is cold\n" +
+"• Vague on target, achievement or ticket size\n" +
+"• Numbers shift between the start and end of the interview\n" +
+"• Only quotes the single best month\n" +
+"• Claims 100 percent achievement every month without detail\n" +
+"\n" +
+"VERIFY\n" +
+"Ask the same number twice, twenty minutes apart, phrased differently. Inconsistency here is the single most reliable signal of an inflated claim.\n" +
 "\n" +
 "RATING GUIDE\n" +
-"5 — Would put this call in front of a real lead today\n" +
-"4 — Strong call, one stage was thin\n" +
-"3 — Complete but mechanical\n" +
-"2 — Two or more stages missing\n" +
-"1 — Could not run the call"
+"5 — Strong verified track record, knows every number cold\n" +
+"4 — Good performer, minor gaps in recall\n" +
+"3 — Average performance, approximate numbers\n" +
+"2 — Weak track record or shaky numbers\n" +
+"1 — Cannot substantiate any claim"
   },
   {
-    key: 'processDiscipline', title: 'Process & CRM Discipline', weight: 15,
+    key: 'processDiscipline', title: 'Process & CRM Discipline', weight: 10,
     guide:
 "QUESTIONS TO ASK\n" +
 "• Which CRM have you used? Walk me through what you log after every call.\n" +
@@ -676,64 +569,245 @@ var ROUND2 = [
 "1 — No process at all"
   },
   {
-    key: 'coachability', title: 'Coachability & Feedback Response', weight: 10,
-    guide:
-"HOW TO TEST\n" +
-"During the role play, stop the candidate once and give a specific correction, for example \"you pitched before asking what they wanted, try the opening again\". Then watch what they do with it.\n" +
-"\n" +
-"ALSO ASK\n" +
-"• Tell me about feedback from a manager that stung. What did you do with it?\n" +
-"• What are you actively trying to improve right now?\n" +
-"\n" +
-"GREEN FLAGS\n" +
-"• Applies the correction immediately and visibly\n" +
-"• Asks a clarifying question about the feedback\n" +
-"• Names a specific current improvement area, not a generic weakness\n" +
-"• Treats the correction as useful rather than as criticism\n" +
-"\n" +
-"RED FLAGS\n" +
-"• Defends the original approach\n" +
-"• Says the right words but repeats the same behaviour\n" +
-"• Cannot recall ever receiving difficult feedback\n" +
-"\n" +
-"RATING GUIDE\n" +
-"5 — Absorbs and applies feedback within the same conversation\n" +
-"4 — Receptive, applies it partly\n" +
-"3 — Accepts feedback without visible change\n" +
-"2 — Defensive\n" +
-"1 — Rejects the feedback outright"
-  },
-  {
-    key: 'joiningFit', title: 'Stability, Joining & Comp Fit', weight: 10,
+    key: 'salesMindset', title: 'Sales Mindset', weight: 10,
     guide:
 "QUESTIONS TO ASK\n" +
-"• Walk me through your last three roles and why each one ended.\n" +
+"• What do you enjoy most about sales?\n" +
+"• What is the most difficult part of sales?\n" +
+"• If you had the option to move into a non-sales role tomorrow with the same salary, would you take it? Why?\n" +
+"\n" +
+"PURPOSE\n" +
+"Determine whether the candidate genuinely enjoys sales or is simply using it as a temporary job.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"Enjoys competition, closing deals, solving customer problems, negotiation, variable earnings, targets, continuous improvement. Acknowledges challenges like rejection or follow-ups but explains how they overcome them.\n" +
+"\n" +
+"RED FLAGS\n" +
+"Dislikes calling people, follow-ups, targets, pressure, rejection, or customer conversations. These are fundamental parts of a B2C inside sales role.\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Loves sales and thrives in performance environments\n" +
+"4 — Positive attitude towards sales\n" +
+"3 — Neutral\n" +
+"2 — Mixed feelings about sales\n" +
+"1 — Does not enjoy core sales activities"
+  }
+];
+
+var ROUND2 = [
+  {
+    key: 'behindTarget', title: 'Response to Being Behind Target', weight: 25,
+    guide:
+"THE CORE SCENARIO OF THIS ROUND\n" +
+"\"It is the 18th. You are at 40 percent of your monthly target. Twelve days left. Walk me through exactly what you do, starting tomorrow morning.\"\n" +
+"\n" +
+"Then push:\n" +
+"• \"It is now the 25th and you are at 60 percent. What changes?\"\n" +
+"• \"Your manager offers no extra leads. Now what?\"\n" +
+"• \"Tell me about a real month where this happened. What did you actually do, and how did it end?\"\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"This is the single most predictive question for our floor. Everyone is fine at 90 percent on the 5th. What matters is what they do at 40 percent on the 18th.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Goes to the pipeline first: reopens payment prospects, counselled-but-undecided, old follow-ups\n" +
+"• Segments rather than dialling harder at random\n" +
+"• Increases dials AND changes approach, not just volume\n" +
+"• Asks the manager for specific help, such as a joint call or a closing offer, rather than more leads\n" +
+"• Works backwards from the gap: how many enrolments, so how many counsellings, so how many connects\n" +
+"• Has a real story with a real outcome, including one that did not work\n" +
+"\n" +
+"RED FLAGS\n" +
+"• \"I will work harder\" with nothing behind it\n" +
+"• First instinct is to ask for more leads or blame lead quality\n" +
+"• Waits for the manager to tell them what to do\n" +
+"• Gets visibly deflated by the scenario itself\n" +
+"• Only answer is discounting\n" +
+"• Cannot recall ever being behind, which usually means the target was soft or they are not being honest\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Immediately works the math backwards and names specific pipeline actions, with a real story to match\n" +
+"4 — Solid recovery plan, slightly light on specifics\n" +
+"3 — Generic effort answer, some structure\n" +
+"2 — Vague, mostly about working harder or needing more leads\n" +
+"1 — No plan, deflects or blames"
+  },
+  {
+    key: 'pressureHandling', title: 'Pressure Handling & Resilience', weight: 20,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Describe the most pressure you have been under at work. What did it feel like and what did you do?\n" +
+"• How many rejections do you take in a normal day? What does the twentieth no feel like compared to the first?\n" +
+"• Tell me about a deal you were sure of that fell through. What did you do that evening, and the next morning?\n" +
+"• How did you handle daily target reviews or floor huddles when you were behind?\n" +
+"• What do you do when you have had three bad days in a row?\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"Our environment has daily targets, public leaderboards and a lot of rejection. Someone who takes every no personally will burn out inside a quarter.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Separates the rejection from their self-worth without sounding rehearsed\n" +
+"• Describes a specific reset routine that works for them\n" +
+"• Treats a lost deal as information and can say what they extracted from it\n" +
+"• Stays steady rather than swinging between elation and despair\n" +
+"• Has clearly been through a genuinely hard stretch and came out of it\n" +
+"\n" +
+"RED FLAGS\n" +
+"• Has never experienced real pressure and does not seem curious about it\n" +
+"• Describes pressure as unfair or as poor management\n" +
+"• Withdraws, stops calling, or avoids the manager when behind\n" +
+"• Visible defensiveness when you probe a failure\n" +
+"• Only coping mechanism is to change jobs\n" +
+"\n" +
+"HOW TO TEST IT LIVE\n" +
+"Interrupt one of their answers and challenge a claim directly. Watch the recovery, not the answer.\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Proven resilience under real pressure, recovers fast and stays steady\n" +
+"4 — Handles pressure well with minor wobbles\n" +
+"3 — Manages, but has not been tested hard\n" +
+"2 — Struggles, avoids or withdraws under pressure\n" +
+"1 — Cannot function in a target-driven environment"
+  },
+  {
+    key: 'workEthic', title: 'Work Ethic & Go-Getter Attitude', weight: 20,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• What time did you start and finish on a typical day in your last role? What about on the last day of the month?\n" +
+"• Tell me about something you did at work that nobody asked you to do.\n" +
+"• When did you last stay back or come in early for a deal? What happened?\n" +
+"• What is the hardest you have ever worked for something, in or out of work?\n" +
+"• Tell me about a time you took on something outside your job description.\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"Whether effort is self-generated or supervised. Go-getters create their own next action. Others wait to be assigned one.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Specific, dated examples rather than general claims about being hardworking\n" +
+"• Has done unglamorous work to get a result, such as chasing a lead across weeks or calling at awkward hours\n" +
+"• Took initiative without being asked and can name the outcome\n" +
+"• Month-end intensity clearly differs from month-start\n" +
+"• Effort shows up outside work too, in studies, sport, side income or supporting family\n" +
+"\n" +
+"RED FLAGS\n" +
+"• \"I am very hardworking\" with no example behind it\n" +
+"• Counts hours rather than outcomes\n" +
+"• Clock-out mentality on the last day of the month\n" +
+"• Every example was assigned by someone else\n" +
+"• Treats going beyond the brief as someone else's job\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Self-driven, multiple concrete examples of going beyond the brief\n" +
+"4 — Hardworking with good examples\n" +
+"3 — Does the job properly, little beyond it\n" +
+"2 — Needs supervision to sustain effort\n" +
+"1 — Minimum effort, clock-watcher"
+  },
+  {
+    key: 'competitiveness', title: 'Competitiveness & Ambition', weight: 15,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Who was the top performer in your team? Where did you rank?\n" +
+"• Why were you not number one? What stopped you?\n" +
+"• What did the top performer do differently from you?\n" +
+"• Does a leaderboard motivate you or stress you out? Be honest.\n" +
+"• Where do you want to be in two years, and what has to be true for that?\n" +
+"• Tell me about a time you were beaten at something and how you responded.\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"Whether they want to win, and whether they own the gap between themselves and the best person in the room.\n" +
+"\n" +
+"GREEN FLAGS\n" +
+"• Knows exactly where they ranked and by how much\n" +
+"• \"I wasn't consistent\" or \"they managed objections better\", owning the gap\n" +
+"• Studied the top performer rather than resented them\n" +
+"• Energised by a leaderboard\n" +
+"• Ambition is specific and has a plan attached\n" +
+"\n" +
+"RED FLAGS\n" +
+"• \"My manager never supported me\"\n" +
+"• \"They received better leads\"\n" +
+"• \"The top performer got lucky\"\n" +
+"• Uncomfortable with ranking or public numbers\n" +
+"• No interest in being the best, just in being adequate\n" +
+"• Repeated external blame, which is the strongest negative signal in this section\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Genuinely competitive, full ownership of the gap, clear ambition\n" +
+"4 — Competitive with good self-awareness\n" +
+"3 — Average, content in the middle of the table\n" +
+"2 — Uncomfortable with competition or weak ownership\n" +
+"1 — Constant blame and excuses, no drive to win"
+  },
+  {
+    key: 'financialMotivation', title: 'Financial Motivation & Dependencies', weight: 10,
+    guide:
+"HOW TO ASK THIS PROPERLY\n" +
+"The purpose is to understand what the money is FOR, because that is what sustains someone through a hard month. It is not to judge anyone's family situation, and it must never become the reason for a rejection on its own. Ask openly, accept whatever answer comes, and score the clarity of the motivation rather than the circumstances behind it.\n" +
+"\n" +
+"QUESTIONS TO ASK\n" +
+"• What are you earning now, fixed and variable? What are you looking for?\n" +
+"• What are you saving towards, or what would the extra income go to?\n" +
+"• Is anyone depending on your income?\n" +
+"• If your income doubled next year, what would change in your life?\n" +
+"• How comfortable are you with a large part of your pay being variable?\n" +
+"\n" +
+"WHAT YOU ARE TESTING\n" +
+"Hunger with a reason behind it. A specific financial goal is what keeps someone dialling on the 25th.\n" +
+"\n" +
+"STRONG INDICATORS\n" +
+"• A concrete goal: supporting parents, clearing a loan, a home, funding further study\n" +
+"• Comfortable with variable pay and can explain why\n" +
+"• Has thought about what the money is actually for\n" +
+"• Realistic about what the role pays\n" +
+"\n" +
+"WEAK INDICATORS\n" +
+"• No clear goals, has not thought about it\n" +
+"• Wants everything fixed, uneasy about variable pay\n" +
+"• Looking only for job stability\n" +
+"• Expectation far outside band with no flexibility\n" +
+"\n" +
+"RATING GUIDE\n" +
+"5 — Clear, specific financial goal and fully comfortable with variable pay\n" +
+"4 — Good motivation with realistic expectations\n" +
+"3 — Average motivation, goals are vague\n" +
+"2 — Weak motivation or uneasy about variable pay\n" +
+"1 — No visible drive to earn, or expectations that cannot be met"
+  },
+  {
+    key: 'ownershipStability', title: 'Ownership, Stability & Joining Fit', weight: 10,
+    guide:
+"QUESTIONS TO ASK\n" +
+"• Walk me through your last three roles and why each one ended. Keep asking \"why?\" until the real reason surfaces.\n" +
+"• If the issues at your current company were fixed, would you stay?\n" +
+"• What would your previous manager say about your performance, good and bad?\n" +
 "• What notice period do you have, and what is your realistic joining date?\n" +
-"• What are you expecting fixed versus variable, and what are you currently earning as a mix?\n" +
 "• Are you interviewing elsewhere? At what stage?\n" +
 "• Our shift and working days are fixed. Does that work for you long term?\n" +
 "\n" +
 "WHAT YOU ARE TESTING\n" +
-"Whether the offer is likely to be accepted and the person likely to stay past ramp.\n" +
+"Professional maturity, and whether the offer is likely to be accepted and the person likely to stay past ramp.\n" +
 "\n" +
 "GREEN FLAGS\n" +
 "• Clear, consistent reasons for each move\n" +
-"• Comfortable with a variable-heavy structure\n" +
-"• Realistic expectations, stated openly\n" +
-"• Commute, shift and work days are workable\n" +
+"• Leaving for growth, learning, earning potential or more responsibility\n" +
+"• Speaks about previous employers without bitterness\n" +
+"• Owns their part in what went wrong\n" +
+"• Commute, shift and working days are workable\n" +
 "\n" +
 "RED FLAGS\n" +
 "• Three or more jobs in under two years with vague reasons\n" +
-"• Wants everything fixed, uneasy about variable pay\n" +
-"• Expectation far outside band with no flexibility\n" +
+"• Blames everyone else, complains excessively\n" +
+"• Speaks disrespectfully about a previous employer\n" +
+"• Inconsistent answers when you circle back\n" +
 "• Evasive about other offers or joining date\n" +
 "\n" +
 "RATING GUIDE\n" +
-"5 — Stable history, aligned expectations, can join on time\n" +
-"4 — Minor concern, manageable\n" +
-"3 — Some risk on tenure or expectations\n" +
-"2 — Significant flight or comp risk\n" +
-"1 — Unlikely to join or to stay"
+"5 — Mature and accountable, stable history, can join on time\n" +
+"4 — Mostly positive, minor concern\n" +
+"3 — Neutral, some risk on tenure or joining\n" +
+"2 — Defensive and excuse-driven, or significant flight risk\n" +
+"1 — Strong blame mentality, unlikely to join or to stay"
   }
 ];
 
