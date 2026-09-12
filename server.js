@@ -53,6 +53,13 @@ function sslConfig() {
 async function initPostgres() {
   const { Pool } = require('pg');
   pool = new Pool({ connectionString: DATABASE_URL, ssl: sslConfig(), max: 5 });
+  // An idle client dying (database restart, network blip) must not take the
+  // process down, and must mark storage unready so the next call re-inits.
+  pool.on('error', function (err) {
+    console.error('Postgres pool error: ' + err.message);
+    store.ready = false;
+    store.error = err.message;
+  });
   await pool.query(`
     CREATE TABLE IF NOT EXISTS candidates (
       id          TEXT PRIMARY KEY,
@@ -106,11 +113,45 @@ async function initStore() {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
     store.ready = true;
+    store.error = null;
+    store.attempts = 0;
     console.log('Storage ready: ' + store.kind);
+    return true;
   } catch (e) {
+    store.ready = false;
     store.error = e.message;
+    if (pool) { try { pool.end(); } catch (err) {} pool = null; }
     console.error('Storage init failed: ' + e.message);
+    return false;
   }
+}
+
+/**
+ * Keep retrying until the database answers. A Railway app often boots before
+ * its Postgres service is accepting connections, and the database restarts on
+ * its own schedule; without this the app would serve 503s until someone
+ * noticed and redeployed.
+ */
+function initStoreWithRetry() {
+  store.attempts = (store.attempts || 0) + 1;
+  return initStore().then(function (ok) {
+    if (ok) return true;
+    var delay = Math.min(2000 * store.attempts, 30000);
+    console.log('Retrying storage connection in ' + Math.round(delay / 1000) + 's (attempt ' + store.attempts + ')');
+    setTimeout(initStoreWithRetry, delay);
+    return false;
+  });
+}
+
+/** Give a request one chance to bring the connection back before failing. */
+function ensureStore() {
+  if (store.ready) return Promise.resolve(true);
+  if (store._reviving) return store._reviving;
+  store._reviving = initStore().then(function (ok) {
+    store._reviving = null;
+    return ok;
+  });
+  return store._reviving;
 }
 
 async function listCandidates() {
@@ -236,11 +277,15 @@ app.post('/api/login', function (req, res) {
 
 // Everything below needs the passcode.
 app.use('/api', function (req, res, next) {
-  if (!store.ready) {
-    return res.status(503).json({ error: 'Storage not ready' + (store.error ? ': ' + store.error : '') });
-  }
   if (!checkPasscode(req)) return res.status(401).json({ error: 'Passcode required' });
-  next();
+  ensureStore().then(function (ok) {
+    if (!ok) {
+      return res.status(503).json({
+        error: 'The database is not reachable right now, retrying' + (store.error ? ': ' + store.error : '')
+      });
+    }
+    next();
+  });
 });
 
 app.get('/api/candidates', async function (req, res) {
@@ -367,9 +412,10 @@ app.get('*', function (req, res) {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-initStore().then(function () {
-  app.listen(PORT, function () {
-    console.log('Sales hiring tracker listening on ' + PORT + ' (storage: ' + store.kind + ')');
-    if (!PASSCODE) console.log('WARNING: APP_PASSCODE is not set, the app is open to anyone with the link.');
-  });
+// Listen straight away so the platform health check passes, and keep working
+// on the database connection in the background.
+app.listen(PORT, function () {
+  console.log('Sales hiring tracker listening on ' + PORT + ' (storage: ' + store.kind + ')');
+  if (!PASSCODE) console.log('WARNING: APP_PASSCODE is not set, the app is open to anyone with the link.');
+  initStoreWithRetry();
 });
